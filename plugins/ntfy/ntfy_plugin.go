@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/urfave/cli/v2"
+	"go.codycody31.dev/support/config"
 )
 
 func SetupCommands() []*cli.Command {
@@ -33,6 +34,19 @@ func SetupCommands() []*cli.Command {
 						},
 					},
 				},
+				{
+					Name:   "configure",
+					Usage:  "Configure ntfy",
+					Action: ConfigureNtfy,
+					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name:     "url",
+							Aliases:  []string{"u"},
+							Usage:    "Ntfy server URL",
+							Required: true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -41,12 +55,18 @@ func SetupCommands() []*cli.Command {
 func NtfySend(c *cli.Context) error {
 	topic := c.String("topic")
 	message := c.String("message")
+	server, _ := config.GetPluginSetting("ntfy", "server")
 
 	if topic == "" || message == "" {
 		return fmt.Errorf("both topic and message are required")
 	}
 
-	url := fmt.Sprintf("https://ntfy.sh/%s", topic)
+	serverURL := "https://ntfy.sh"
+	if server != nil {
+		serverURL = server.(string)
+	}
+
+	url := fmt.Sprintf("%s/%s", serverURL, topic)
 	req, err := http.NewRequest("POST", url, strings.NewReader(message))
 	if err != nil {
 		return fmt.Errorf("failed to create request: %v", err)
@@ -65,5 +85,15 @@ func NtfySend(c *cli.Context) error {
 	}
 
 	fmt.Println("Notification sent successfully!")
+	return nil
+}
+
+func ConfigureNtfy(c *cli.Context) error {
+	url := c.String("url")
+	err := config.UpdatePluginSetting("ntfy", "server", url)
+	if err != nil {
+		return fmt.Errorf("failed to set ntfy server: %v", err)
+	}
+	fmt.Printf("Ntfy server set to %s\n", url)
 	return nil
 }

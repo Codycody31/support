@@ -1,74 +1,14 @@
 package plugins
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"plugin"
-	"runtime"
 
 	"github.com/urfave/cli/v2"
+	"go.codycody31.dev/support/config"
 )
-
-var configFilePath string
-var enabledPlugins = map[string]bool{}
-
-func init() {
-	configFilePath = getConfigFilePath()
-	loadConfig()
-}
-
-func getConfigFilePath() string {
-	var configDir string
-
-	if runtime.GOOS == "windows" {
-		configDir = os.Getenv("APPDATA")
-	} else {
-		configDir = "/etc"
-	}
-
-	return filepath.Join(configDir, "support", "plugins.json")
-}
-
-func loadConfig() {
-	file, err := os.Open(configFilePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			// Create the folder if it doesn't exist
-			err = os.MkdirAll(filepath.Dir(configFilePath), 0755)
-			if err != nil {
-				fmt.Println("Error creating config folder:", err)
-				return
-			}
-
-			saveConfig()
-			return
-		}
-		fmt.Println("Error loading config:", err)
-		return
-	}
-	defer file.Close()
-
-	err = json.NewDecoder(file).Decode(&enabledPlugins)
-	if err != nil {
-		fmt.Println("Error decoding config:", err)
-	}
-}
-
-func saveConfig() {
-	file, err := os.Create(configFilePath)
-	if err != nil {
-		fmt.Println("Error saving config:", err)
-		return
-	}
-	defer file.Close()
-
-	err = json.NewEncoder(file).Encode(&enabledPlugins)
-	if err != nil {
-		fmt.Println("Error encoding config:", err)
-	}
-}
 
 func LoadPlugins(app *cli.App) {
 	pluginsDir := "./plugins_dir"
@@ -83,7 +23,7 @@ func LoadPlugins(app *cli.App) {
 			// Then trim off _plugin.so
 			pluginName = pluginName[:len(pluginName)-10]
 
-			if enabledPlugins[pluginName] {
+			if config.GetConfig().Plugins[pluginName] {
 				p, err := plugin.Open(path)
 				if err != nil {
 					return fmt.Errorf("failed to load plugin %s: %v", pluginName, err)
@@ -113,23 +53,23 @@ func LoadPlugins(app *cli.App) {
 
 func EnablePlugin(c *cli.Context) error {
 	pluginName := c.String("name")
-	enabledPlugins[pluginName] = true
-	saveConfig()
+	config.GetConfig().Plugins[pluginName] = true
+	config.SaveConfig()
 	fmt.Printf("Plugin %s enabled\n", pluginName)
 	return nil
 }
 
 func DisablePlugin(c *cli.Context) error {
 	pluginName := c.String("name")
-	enabledPlugins[pluginName] = false
-	saveConfig()
+	config.GetConfig().Plugins[pluginName] = false
+	config.SaveConfig()
 	fmt.Printf("Plugin %s disabled\n", pluginName)
 	return nil
 }
 
 func ListPlugins(c *cli.Context) error {
 	fmt.Println("Plugins:")
-	for name, enabled := range enabledPlugins {
+	for name, enabled := range config.GetConfig().Plugins {
 		fmt.Printf("  %s: %v\n", name, enabled)
 	}
 	return nil
