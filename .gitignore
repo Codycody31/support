@@ -30,3 +30,4 @@ go.work.sum
 
 # Project libraries
 plugins_dir/
+support

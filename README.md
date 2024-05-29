@@ -47,13 +47,13 @@
     - Enable a plugin:
 
       ```sh
-      ./support plugin enable --name ntfy_plugin.so
+      ./support plugin enable --name ntfy
       ```
 
     - Disable a plugin:
 
       ```sh
-      ./support plugin disable --name ntfy_plugin.so
+      ./support plugin disable --name ntfy
       ```
 
 3. Use the dynamically loaded plugin commands:
