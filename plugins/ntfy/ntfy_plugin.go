@@ -49,6 +49,11 @@ func SetupCommands() []*cli.Command {
 							Usage:    "Ntfy server URL",
 							Required: true,
 						},
+						&cli.StringFlag{
+							Name:    "access-token",
+							Aliases: []string{"a"},
+							Usage:   "Ntfy access token",
+						},
 					},
 				},
 			},
@@ -76,6 +81,9 @@ func NtfySend(c *cli.Context) error {
 		return fmt.Errorf("failed to create request: %v", err)
 	}
 	req.Header.Set("Title", "Notification")
+	if token, _ := config.GetPluginSetting("ntfy", "access-token"); token != nil {
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -94,10 +102,23 @@ func NtfySend(c *cli.Context) error {
 
 func ConfigureNtfy(c *cli.Context) error {
 	url := c.String("url")
+	accessToken := c.String("access-token")
+
+	// Strip the trailing slash from the URL
+	url = strings.TrimSuffix(url, "/")
+
 	err := config.UpdatePluginSetting("ntfy", "server", url)
 	if err != nil {
 		return fmt.Errorf("failed to set ntfy server: %v", err)
 	}
+
+	if accessToken != "" {
+		err = config.UpdatePluginSetting("ntfy", "access-token", accessToken)
+		if err != nil {
+			return fmt.Errorf("failed to set ntfy access token: %v", err)
+		}
+	}
+
 	fmt.Printf("Ntfy server set to %s\n", url)
 	return nil
 }
