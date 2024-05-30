@@ -9,6 +9,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func Name() string {
+	return "rest"
+}
+
 func SetupCommands() []*cli.Command {
 	return []*cli.Command{
 		{

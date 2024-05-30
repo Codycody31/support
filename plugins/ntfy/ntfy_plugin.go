@@ -9,6 +9,10 @@ import (
 	"go.codycody31.dev/support/config"
 )
 
+func Name() string {
+	return "ntfy"
+}
+
 func SetupCommands() []*cli.Command {
 	return []*cli.Command{
 		{

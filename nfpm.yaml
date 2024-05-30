@@ -1,0 +1,11 @@
+name: support
+arch: amd64
+platform: linux
+description: System Utilities and Plugin-based Operations, Routines, and Tasks
+homepage: https://github.com/CodyCodes/support
+license: MIT
+maintainer: Insidious Fiddler <open-source@codycody31.dev>
+section: admin
+contents:
+  - src: ./dist/linux_amd64/support
+    dst: /usr/local/bin/support

@@ -10,6 +10,10 @@ import (
 	"go.codycody31.dev/support/config"
 )
 
+func Name() string {
+	return "caprover"
+}
+
 func SetupCommands() []*cli.Command {
 	return []*cli.Command{
 		{

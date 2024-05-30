@@ -7,6 +7,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+func Name() string {
+	return "docker"
+}
+
 func SetupCommands() []*cli.Command {
 	return []*cli.Command{
 		{
