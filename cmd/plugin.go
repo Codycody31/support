@@ -11,6 +11,19 @@ var PluginCommand = &cli.Command{
 	Usage: "Manage plugins",
 	Subcommands: []*cli.Command{
 		{
+			Name:   "register",
+			Usage:  "Register a plugin directory",
+			Action: plugins.RegisterPluginDir,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "dir",
+					Aliases:  []string{"d"},
+					Usage:    "Plugin directory",
+					Required: true,
+				},
+			},
+		},
+		{
 			Name:   "enable",
 			Usage:  "Enable a plugin",
 			Action: plugins.EnablePlugin,

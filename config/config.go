@@ -11,6 +11,7 @@ import (
 
 type Config struct {
 	Plugins        map[string]bool                   `yaml:"plugins"`
+	PluginsDir     string                            `yaml:"plugins_dir"`
 	PluginSettings map[string]map[string]interface{} `yaml:"plugin_settings"`
 }
 
@@ -22,16 +23,20 @@ func init() {
 	loadConfig()
 }
 
-func getConfigFilePath() string {
-	var configDir string
+func getSupportDir() string {
+	var supportDir string
 
 	if runtime.GOOS == "windows" {
-		configDir = os.Getenv("APPDATA")
+		supportDir = os.Getenv("APPDATA")
 	} else {
-		configDir = "/etc"
+		supportDir = "/etc"
 	}
 
-	return filepath.Join(configDir, "support", "config.yaml")
+	return filepath.Join(supportDir, "support")
+}
+
+func getConfigFilePath() string {
+	return filepath.Join(getSupportDir(), "config.yaml")
 }
 
 func loadConfig() {
@@ -41,6 +46,7 @@ func loadConfig() {
 			config = Config{
 				Plugins:        make(map[string]bool),
 				PluginSettings: make(map[string]map[string]interface{}),
+				PluginsDir:     filepath.Join(getSupportDir(), "plugins"),
 			}
 			saveConfig()
 			return

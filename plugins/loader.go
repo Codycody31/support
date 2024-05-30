@@ -11,7 +11,7 @@ import (
 )
 
 func LoadPlugins(app *cli.App) {
-	pluginsDir := "./plugins_dir"
+	pluginsDir := config.GetConfig().PluginsDir
 	err := filepath.Walk(pluginsDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -49,6 +49,27 @@ func LoadPlugins(app *cli.App) {
 	if err != nil {
 		fmt.Println("Error loading plugins:", err)
 	}
+}
+
+func RegisterPluginDir(c *cli.Context) error {
+	pluginsDir := c.String("dir")
+
+	// Check if the directory exists
+	if _, err := os.Stat(pluginsDir); os.IsNotExist(err) {
+		// Create the directory and any missing parent directories
+		err := os.MkdirAll(pluginsDir, 0755)
+		if err != nil {
+			fmt.Println("Error creating plugin directory:", err)
+			return err
+		} else {
+			fmt.Printf("Created plugin directory %s\n", pluginsDir)
+		}
+	}
+
+	config.GetConfig().PluginsDir = pluginsDir
+	config.SaveConfig()
+	fmt.Printf("Plugin directory set to %s\n", pluginsDir)
+	return nil
 }
 
 func EnablePlugin(c *cli.Context) error {
