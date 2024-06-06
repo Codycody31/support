@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/urfave/cli/v2"
@@ -52,7 +53,13 @@ func SetupCommands() []*cli.Command {
 							Required: true,
 						},
 						&cli.BoolFlag{
+							Name:    "exact",
+							Aliases: []string{"e"},
+							Usage:   "Use exact match for app names",
+						},
+						&cli.BoolFlag{
 							Name:        "dry-run",
+							Aliases:     []string{"d"},
 							Usage:       "Dry run",
 							DefaultText: "false",
 						},
@@ -118,6 +125,7 @@ func CaproverConfigure(c *cli.Context) error {
 
 func CaproverDelete(c *cli.Context) error {
 	regex := c.String("regex")
+	exact := c.Bool("exact")
 	dryRun := c.Bool("dry-run")
 	matched := 0
 
@@ -172,10 +180,19 @@ func CaproverDelete(c *cli.Context) error {
 	for _, app := range apps {
 		appName := app.(map[string]interface{})["appName"].(string)
 
-		// Check if the app matches the regex
-		// TODO: Allow setting the regex flags
-		// TODO: Along with strict matching like ^app$, etc being all configurable via flags
-		if !strings.Contains(appName, regex) {
+		// Check if the app matches the regex or exact name
+		match := false
+		if exact {
+			match = appName == regex
+		} else {
+			matched, err := regexp.MatchString(regex, appName)
+			if err != nil {
+				return fmt.Errorf("failed to compile regex: %v", err)
+			}
+			match = matched
+		}
+
+		if !match {
 			continue
 		}
 
