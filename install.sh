@@ -62,7 +62,7 @@ if [ "$(ls -A $PLUGINS_DIR)" ]; then
     esac
 fi
 
-mv plugins_dir/* "$PLUGINS_DIR/"
+mv dist/plugins/* "$PLUGINS_DIR/"
 
 # Move the core application
 echo "Moving the core application to $HOME/.local/bin..." | tee -a "$LOGFILE"

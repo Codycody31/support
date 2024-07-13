@@ -20,8 +20,8 @@ func LoadPlugins(app *cli.App) {
 		if filepath.Ext(path) == ".so" {
 			pluginName := info.Name()
 
-			// Then trim off _plugin.so
-			pluginName = pluginName[:len(pluginName)-10]
+			// Then trim off .so
+			pluginName = pluginName[:len(pluginName)-3]
 
 			if config.GetConfig().Plugins[pluginName] {
 				p, err := plugin.Open(path)
@@ -84,7 +84,7 @@ func EnablePlugin(c *cli.Context) error {
 
 	if _, exists := configData.Plugins[pluginName]; !exists {
 		// Verify the plugin exists (by checking for the .so file)
-		pluginPath := filepath.Join(configData.PluginsDir, pluginName+"_plugin.so")
+		pluginPath := filepath.Join(configData.PluginsDir, pluginName+".so")
 		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
 			fmt.Printf("Plugin %s does not exist\n", pluginName)
 			return nil
