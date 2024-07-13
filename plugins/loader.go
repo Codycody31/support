@@ -74,7 +74,26 @@ func RegisterPluginDir(c *cli.Context) error {
 
 func EnablePlugin(c *cli.Context) error {
 	pluginName := c.String("name")
-	config.GetConfig().Plugins[pluginName] = true
+
+	configData := config.GetConfig()
+
+	// Initialize the Plugins map if it's nil
+	if configData.Plugins == nil {
+		configData.Plugins = make(map[string]bool)
+	}
+
+	if _, exists := configData.Plugins[pluginName]; !exists {
+		// Verify the plugin exists (by checking for the .so file)
+		pluginPath := filepath.Join(configData.PluginsDir, pluginName+"_plugin.so")
+		if _, err := os.Stat(pluginPath); os.IsNotExist(err) {
+			fmt.Printf("Plugin %s does not exist\n", pluginName)
+			return nil
+		}
+
+		// Add the plugin to the config
+		configData.Plugins[pluginName] = true
+	}
+
 	config.SaveConfig()
 	fmt.Printf("Plugin %s enabled\n", pluginName)
 	return nil

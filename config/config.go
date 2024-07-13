@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"gopkg.in/yaml.v2"
 )
@@ -24,15 +23,13 @@ func init() {
 }
 
 func getSupportDir() string {
-	var supportDir string
-
-	if runtime.GOOS == "windows" {
-		supportDir = os.Getenv("APPDATA")
-	} else {
-		supportDir = "/etc"
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Error getting home directory:", err)
+		homeDir = "/tmp" // Fallback to /tmp if home directory is not found
 	}
 
-	return filepath.Join(supportDir, "support")
+	return filepath.Join(homeDir, ".support")
 }
 
 func getConfigFilePath() string {
