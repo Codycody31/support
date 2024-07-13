@@ -26,13 +26,13 @@
 2. Build all plugins using the provided script:
 
     ```sh
-    ./build_plugins.sh
+    make build-plugins
     ```
 
 3. Build the core application:
 
     ```sh
-    go build -o support main.go
+    make build-binaries
     ```
 
 ### Usage
@@ -40,27 +40,27 @@
 1. Run the `support` CLI tool:
 
     ```sh
-    ./support
+    ./dist/support
     ```
 
 2. Use the `plugin` command to manage plugins:
     - Enable a plugin:
 
       ```sh
-      ./support plugin enable --name ntfy
+      ./dist/support plugin enable --name ntfy
       ```
 
     - Disable a plugin:
 
       ```sh
-      ./support plugin disable --name ntfy
+      ./dist/support plugin disable --name ntfy
       ```
 
 3. Use the dynamically loaded plugin commands:
     - For example, to send a notification using the `ntfy` plugin:
 
       ```sh
-      ./support ntfy send --topic 'mytopic' --message 'Hello, World!'
+      ./dist/support ntfy send --topic 'mytopic' --message 'Hello, World!'
       ```
 
 ## Plugin Development
@@ -70,13 +70,13 @@
 1. Create a new directory for your plugin inside the `plugins` directory:
 
     ```sh
-    mkdir plugins/my_plugin
+    mkdir plugins/myplugin
     ```
 
 2. Implement your plugin, ensuring it has a `SetupCommands` function that returns the commands to be added to the CLI:
 
     ```go
-    // plugins/my_plugin/my_plugin.go
+    // plugins/myplugin/myplugin.go
     package main
 
     import (
@@ -100,7 +100,7 @@
 3. Build all plugins using the provided script:
 
     ```sh
-    ./build_plugins.sh
+    make build-plugins
     ```
 
 4. Enable the plugin and use the new commands as shown in the usage section.

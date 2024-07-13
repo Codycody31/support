@@ -20,14 +20,14 @@ help: ## Display this help.
 
 .PHONY: clean
 clean: ## Clean the project
-	rm -f support
-	rm -f plugins_dir/*.so
+	rm -f dist/support
+	rm -f dist/plugins/*.so
 
 ##@ Build
 
 .PHONY: build-binaries
 build-binaries: ## Build Binaries
-	go build -o support main.go
+	go build -o dist/support main.go
 
 .PHONY: build-plugins
 build-plugins: ## Build Plugins
@@ -35,4 +35,4 @@ build-plugins: ## Build Plugins
 
 .PHONY: build
 build: build-plugins ## Build the project
-	go build -o support main.go
+	go build -o dist/support main.go

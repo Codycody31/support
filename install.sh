@@ -39,7 +39,7 @@ chmod +x build_plugins.sh
 
 # Build the core application
 echo "Building the core application..." | tee -a "$LOGFILE"
-go build -o support main.go | tee -a "$LOGFILE"
+go build -o dist/support main.go | tee -a "$LOGFILE"
 
 # Create necessary directories
 echo "Creating necessary directories..." | tee -a "$LOGFILE"
@@ -67,7 +67,7 @@ mv dist/plugins/* "$PLUGINS_DIR/"
 # Move the core application
 echo "Moving the core application to $HOME/.local/bin..." | tee -a "$LOGFILE"
 mkdir -p "$HOME/.local/bin"
-mv support "$HOME/.local/bin/"
+mv dist/support "$HOME/.local/bin/"
 
 # Update YAML configuration file
 echo "Updating the YAML configuration file..." | tee -a "$LOGFILE"
