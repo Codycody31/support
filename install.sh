@@ -22,6 +22,16 @@ for cmd in git go; do
     fi
 done
 
+# Check if support is already installed
+if [ -f "$HOME/.local/bin/support" ]; then
+    read -p "Support is already installed. Do you want to reinstall it? (y/n): " choice
+    case "$choice" in 
+      y|Y ) echo "Reinstalling support..." | tee -a "$LOGFILE";;
+      n|N ) echo "Skipping installation." | tee -a "$LOGFILE"; exit 0;;
+      * ) echo "Invalid choice. Exiting." | tee -a "$LOGFILE"; exit 1;;
+    esac
+fi
+
 # Clone the repository
 echo "Cloning the repository..." | tee -a "$LOGFILE"
 if [ -d "support" ]; then

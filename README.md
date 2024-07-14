@@ -10,11 +10,19 @@
 
 ## Getting Started
 
-### Prerequisites
+### Automatic Installation
+
+```sh
+curl -s https://raw.githubusercontent.com/Codycody31/support/master/install.sh | bash
+```
+
+### Manual Installation
+
+#### Prerequisites
 
 - Go 1.22.2 or later
 
-### Installation
+#### Installation
 
 1. Clone the repository:
 
@@ -35,7 +43,7 @@
     make build-binaries
     ```
 
-### Usage
+#### Usage
 
 1. Run the `support` CLI tool:
 
