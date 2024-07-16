@@ -1,6 +1,6 @@
 module go.codycody31.dev/support
 
-go 1.22.2
+go 1.18
 
 require github.com/urfave/cli/v2 v2.27.2
 
