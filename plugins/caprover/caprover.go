@@ -65,6 +65,66 @@ func SetupCommands() []*cli.Command {
 						},
 					},
 				},
+				{
+					Name:  "list",
+					Usage: "List apps",
+					Action: func(c *cli.Context) error {
+						// Get the CapRover server URL and token
+						server, exists := config.GetPluginSetting("caprover", "server")
+						if !exists {
+							return fmt.Errorf("caprover server not set")
+						}
+						token, exists := config.GetPluginSetting("caprover", "token")
+						if !exists {
+							return fmt.Errorf("caprover token not set")
+						}
+
+						// Create the request
+						req, err := http.NewRequest("GET", server.(string)+"/api/v2/user/apps/appDefinitions", nil)
+						if err != nil {
+							return fmt.Errorf("failed to create request: %v", err)
+						}
+						req.Header.Set("Content-Type", "application/json")
+						req.Header.Set("x-captain-auth", token.(string))
+
+						// Send the request
+						client := &http.Client{}
+						resp, err := client.Do(req)
+						if err != nil {
+							return fmt.Errorf("failed to send request: %v", err)
+						}
+						defer resp.Body.Close()
+
+						// Check if the request was successful
+						if resp.StatusCode != http.StatusOK {
+							return fmt.Errorf("failed to get apps: %v", resp.Status)
+						}
+
+						// Read the response body
+						response := make(map[string]interface{})
+						err = json.NewDecoder(resp.Body).Decode(&response)
+						if err != nil {
+							return fmt.Errorf("failed to read response: %v", err)
+						}
+
+						if response["status"].(float64) == 1106 {
+							return fmt.Errorf(response["description"].(string))
+						}
+
+						// Loop through the apps
+						apps := response["data"].(map[string]interface{})["appDefinitions"].([]interface{})
+						totalApps := len(apps)
+
+						fmt.Printf("Found %d apps\n", totalApps)
+
+						for _, app := range apps {
+							appName := app.(map[string]interface{})["appName"].(string)
+							fmt.Println(appName)
+						}
+
+						return nil
+					},
+				},
 			},
 		},
 	}
