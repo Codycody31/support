@@ -9,8 +9,9 @@ import (
 )
 
 type Config struct {
-	Plugins        map[string]bool                   `yaml:"plugins"`
-	PluginsDir     string                            `yaml:"plugins_dir"`
+	Plugins map[string]bool `yaml:"plugins"`
+	// PluginsDir     string                            `yaml:"plugins_dir"`
+	PluginDirs     []string                          `yaml:"plugin_dirs"`
 	PluginSettings map[string]map[string]interface{} `yaml:"plugin_settings"`
 }
 
@@ -43,7 +44,7 @@ func loadConfig() {
 			config = Config{
 				Plugins:        make(map[string]bool),
 				PluginSettings: make(map[string]map[string]interface{}),
-				PluginsDir:     filepath.Join(getSupportDir(), "plugins"),
+				PluginDirs:     []string{filepath.Join(getSupportDir(), "plugins")},
 			}
 			saveConfig()
 			return

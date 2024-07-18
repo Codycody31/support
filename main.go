@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	"go.codycody31.dev/support/cmd"
 	"go.codycody31.dev/support/plugins"
 
 	"github.com/urfave/cli/v2"
@@ -14,7 +13,7 @@ func main() {
 		Name:  "support",
 		Usage: "System Utilities and Plugin-based Operations, Routines, and Tasks",
 		Commands: []*cli.Command{
-			cmd.PluginCommand,
+			PluginsCommand,
 		},
 	}
 

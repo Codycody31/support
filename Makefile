@@ -27,7 +27,7 @@ clean: ## Clean the project
 
 .PHONY: build-binaries
 build-binaries: ## Build Binaries
-	go build -o dist/support main.go
+	go build -o dist/support go.codycody31.dev/support
 
 .PHONY: build-plugins
 build-plugins: ## Build Plugins
@@ -35,4 +35,4 @@ build-plugins: ## Build Plugins
 
 .PHONY: build
 build: build-plugins ## Build the project
-	go build -o dist/support main.go
+	go build -o dist/support go.codycody31.dev/support

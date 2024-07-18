@@ -111,7 +111,7 @@ chmod +x build_plugins.sh
 
 # Build the core application
 echo "Building the core application..." | tee -a "$LOGFILE"
-go build -o dist/support main.go | tee -a "$LOGFILE"
+go build -o dist/support go.codycody31.dev/support | tee -a "$LOGFILE"
 
 # Create necessary directories
 echo "Creating necessary directories..." | tee -a "$LOGFILE"
@@ -150,12 +150,13 @@ if [ ! -f "$CONFIG_FILE" ]; then
     echo "plugins_dir: \"/etc/support/plugins\"" | sudo tee "$CONFIG_FILE"
 fi
 
-if grep -q "plugins_dir" "$CONFIG_FILE"; then
-    echo "Updating plugins_dir in configuration file..." | tee -a "$LOGFILE"
-    sed -i 's|plugins_dir:.*|plugins_dir: "'$PLUGINS_DIR'"|' "$CONFIG_FILE"
-else
-    echo "Adding plugins_dir to configuration file..." | tee -a "$LOGFILE"
-    echo "plugins_dir: \"$PLUGINS_DIR\"" >>"$CONFIG_FILE"
-fi
+# FIX: Probably shouldn't do this, and assume the user knows what they're doing
+# if grep -q "plugins_dir" "$CONFIG_FILE"; then
+#     echo "Updating plugins_dir in configuration file..." | tee -a "$LOGFILE"
+#     sed -i 's|plugins_dir:.*|plugins_dir: "'$PLUGINS_DIR'"|' "$CONFIG_FILE"
+# else
+#     echo "Adding plugins_dir to configuration file..." | tee -a "$LOGFILE"
+#     echo "plugins_dir: \"$PLUGINS_DIR\"" >>"$CONFIG_FILE"
+# fi
 
 echo "Installation completed successfully!" | tee -a "$LOGFILE"
