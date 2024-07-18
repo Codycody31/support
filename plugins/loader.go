@@ -77,7 +77,7 @@ func RegisterPluginDir(c *cli.Context) error {
 
 	config.GetConfig().PluginDirs = append(config.GetConfig().PluginDirs, pluginsDir)
 	config.SaveConfig()
-	fmt.Printf("Plugin directory set to %s\n", pluginsDir)
+	fmt.Printf("Registered plugin directory %s\n", pluginsDir)
 	return nil
 }
 
